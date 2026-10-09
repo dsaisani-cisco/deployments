@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: deployments
+  namespace: argocd
+spec:
+  description: Deployments
+  sourceRepos:
+    - https://github.com/dsaisani-cisco/deployments.git
+    - https://github.com/dsaisani-cisco/go-backend.git
+  destinations:
+    - namespace: '*'
+      server: '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
