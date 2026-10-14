@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kargo
+  namespace: argocd
+spec:
+  project: demo
+  destination:
+    namespace: kargo
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: ghcr.io/akuity/kargo-charts
+    chart: kargo
+    targetRevision: v1.12.4
+    helm:
+      parameters:
+        - name: api.adminAccount.passwordHash
+          # Note: A bcrypt-hashed password will contain `$` characters that
+          # MUST each be escaped as `$$`
+          value: bingbong
+        - name: api.adminAccount.tokenSigningKey
+          value: bingbong
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
