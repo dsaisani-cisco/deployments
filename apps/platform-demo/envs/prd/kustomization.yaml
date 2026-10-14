@@ -4,5 +4,5 @@ resources:
   - ../../base
 images:
   - name: danny-app-test
-    newName: localhost:37183/danny-app-test
-    newTag: latest
+    newName: localhost:5000/danny-app-test
+    newTag: "1.0.0"
