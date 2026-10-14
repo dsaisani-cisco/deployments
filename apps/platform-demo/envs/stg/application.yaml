@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-demo-app-stg
+  namespace: argocd
+spec:
+  project: demo
+  source:
+    repoURL: https://github.com/dsaisani-cisco/deployments
+    targetRevision: HEAD
+    path: apps/platform-demo/envs/stg
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: platform-demo-stg
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    managedNamespaceMetadata:
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
