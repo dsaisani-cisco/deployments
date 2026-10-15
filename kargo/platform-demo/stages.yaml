@@ -24,6 +24,14 @@ spec:
         - name: argocdApp
           value: platform-demo-app-stg
       steps:
+        # We need to set the promotion actor to the current user so that the same user cannot then promote to production
+        - uses: set-metadata
+          config:
+            updates:
+            - kind: Freight
+              name: ${{ ctx.targetFreight.name }}
+              values:
+                promotedToStgBy: ${{ ctx.meta.promotion.actor }}
         - uses: git-clone
           config:
             repoURL: ${{ vars.gitRepo }}
@@ -85,6 +93,10 @@ spec:
         - name: argocdApp
           value: platform-demo-app-prd
       steps:
+        - uses: fail
+          if: ${{ ctx.meta.promotion.actor == freightMetadata(ctx.targetFreight.name).promotedToStgBy }}
+          config:
+            message: ${{ ctx.meta.promotion.actor }} promoted this Freight to staging and cannot promote it to production
         - uses: git-clone
           config:
             repoURL: ${{ vars.gitRepo }}
