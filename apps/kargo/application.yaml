@@ -16,6 +16,12 @@ spec:
       parameters:
         - name: api.secret.name
           value: kargo-api
+        # git and ssh in this image call OpenSSL ARM routines this minikube
+        # node does not implement, so HTTPS clones die with SIGILL.
+        - name: controller.env[0].name
+          value: OPENSSL_armcap
+        - name: controller.env[0].value
+          value: "0"
   syncPolicy:
     automated:
       prune: true
