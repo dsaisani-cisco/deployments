@@ -22,6 +22,7 @@ spec:
           value: OPENSSL_armcap
         - name: controller.env[0].value
           value: "0"
+          forceString: true
   syncPolicy:
     automated:
       prune: true
