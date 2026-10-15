@@ -54,6 +54,9 @@ spec:
                 sources:
                   - repoURL: ${{ vars.gitRepo }}
                     desiredRevision: ${{ outputs.commit.commit }}
+  verificationTemplate:
+    analysisTemplates:
+      - name: integration-test
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
