@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
   name: integration-test
-  namespace: guestbook
+  namespace: platform-demo
 spec:
   metrics:
   - name: integration-test

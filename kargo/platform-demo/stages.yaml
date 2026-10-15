@@ -54,7 +54,7 @@ spec:
                 sources:
                   - repoURL: ${{ vars.gitRepo }}
                     desiredRevision: ${{ outputs.commit.commit }}
-  verificationTemplate:
+  verification:
     analysisTemplates:
       - name: integration-test
 ---
