@@ -1,0 +1,16 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: danny-app-test
+  namespace: platform-demo
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  subscriptions:
+    - image:
+        # ClusterIP of kube-system/registry. Kargo only speaks plain HTTP to
+        # localhost or private IPs, and localhost inside the controller pod is
+        # not the node's registry proxy.
+        repoURL: 10.108.65.240/danny-app-test
+        imageSelectionStrategy: SemVer
+        constraint: ^1.0.0
