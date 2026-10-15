@@ -13,11 +13,41 @@ spec:
     chart: kargo
     targetRevision: 1.12.4
     helm:
+      values: |
+        # Kargo runs git with a clean environment, so a pod env var never
+        # reaches git-remote-https. This minikube node cannot run the ARM
+        # crypto routines in that helper, so wrap the binary and set the
+        # workaround there.
+        controller:
+          initContainers:
+            - name: wrap-git
+              image: ghcr.io/akuity/kargo:v1.12.4
+              command: ["sh", "-c"]
+              args:
+                - |
+                  cp /usr/bin/git /gitwrap/git.real
+                  cat > /gitwrap/git << 'EOF'
+                  #!/bin/sh
+                  export OPENSSL_armcap=0
+                  exec /usr/bin/git.real "$@"
+                  EOF
+                  chmod 755 /gitwrap/git /gitwrap/git.real
+              volumeMounts:
+                - name: gitwrap
+                  mountPath: /gitwrap
+          volumes:
+            - name: gitwrap
+              emptyDir: {}
+          volumeMounts:
+            - name: gitwrap
+              mountPath: /usr/bin/git
+              subPath: git
+            - name: gitwrap
+              mountPath: /usr/bin/git.real
+              subPath: git.real
       parameters:
         - name: api.secret.name
           value: kargo-api
-        # git and ssh in this image call OpenSSL ARM routines this minikube
-        # node does not implement, so HTTPS clones die with SIGILL.
         - name: controller.env[0].name
           value: OPENSSL_armcap
         - name: controller.env[0].value
