@@ -9,4 +9,4 @@ spec:
   promotionPolicies:
     - stageSelector:
         name: stg
-      autoPromotionEnabled: true
+      autoPromotionEnabled: false
