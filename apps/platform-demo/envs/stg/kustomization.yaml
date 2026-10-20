@@ -5,4 +5,4 @@ resources:
 images:
 - name: danny-app-test
   newName: localhost:5000/danny-app-test
-  newTag: 1.0.0
+  newTag: 1.0.1
