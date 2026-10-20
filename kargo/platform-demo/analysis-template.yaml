@@ -12,9 +12,11 @@ spec:
           template:
             spec:
               containers:
-              # TODO: REPLACE THIS WITH INTEGRATION TEST CONTAINER
-              - name: sleep
+              - name: now
                 image: alpine:latest
-                command: [sleep, "10"]
+                command: ["sh", "-c"]
+                args:
+                - |
+                  wget -q -O - "http://demo-app.platform-demo-stg.svc.cluster.local:8081/now" | grep -q '"now"'
               restartPolicy: Never
           backoffLimit: 1
