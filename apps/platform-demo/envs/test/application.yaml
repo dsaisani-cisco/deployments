@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-demo-app-test
+  namespace: argocd
+  annotations:
+    kargo.akuity.io/authorized-stage: platform-demo:test
+spec:
+  project: demo
+  source:
+    repoURL: https://github.com/dsaisani-cisco/deployments
+    targetRevision: HEAD
+    path: apps/platform-demo/envs/test
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: platform-demo-test
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    managedNamespaceMetadata:
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"

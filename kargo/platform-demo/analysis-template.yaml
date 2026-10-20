@@ -12,6 +12,7 @@ spec:
           template:
             spec:
               containers:
+              # TODO: REPLACE THIS WITH INTEGRATION TEST CONTAINER
               - name: sleep
                 image: alpine:latest
                 command: [sleep, "10"]
