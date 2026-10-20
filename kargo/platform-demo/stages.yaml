@@ -79,55 +79,20 @@ spec:
         kind: Warehouse
         name: danny-app-test
       sources:
-        direct: true
+        stages:
+          - stg
   promotionTemplate:
     spec:
-      vars:
-        - name: gitRepo
-          value: https://github.com/dsaisani-cisco/deployments
-        - name: imageRepo
-          value: 10.108.65.240/danny-app-test
-        - name: overlay
-          value: apps/platform-demo/envs/test
-        - name: argocdApp
-          value: platform-demo-app-test
       steps:
-        - uses: git-clone
+        - uses: compose-output
           config:
-            repoURL: ${{ vars.gitRepo }}
-            checkout:
-              - branch: main
-                path: ./repo
-        - uses: kustomize-set-image
-          as: update-image
-          config:
-            path: ./repo/${{ vars.overlay }}
-            images:
-              - image: danny-app-test
-                newName: localhost:5000/danny-app-test
-                tag: ${{ imageFrom(vars.imageRepo).Tag }}
-        - uses: git-commit
-          as: commit
-          config:
-            path: ./repo
-            message: ${{ outputs['update-image'].commitMessage }}
-        - uses: git-push
-          config:
-            path: ./repo
-        - uses: argocd-update
-          config:
-            apps:
-              - name: ${{ vars.argocdApp }}
-                namespace: argocd
-                sources:
-                  - repoURL: ${{ vars.gitRepo }}
-                    desiredRevision: ${{ outputs.commit.commit }}
+            checked: staging
   verification:
     analysisTemplates:
       - name: health-check
     args:
       - name: service-url
-        value: http://demo-app.platform-demo-test.svc.cluster.local:8081/healthz
+        value: http://demo-app.platform-demo-stg.svc.cluster.local:8081/healthz
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
